@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <style>
+            table {
+                font-family: arial, sans-serif;
+                border: 1px solid black;
+            }
+            
+            td, th {
+                border: 1px solid black;
+                text-align: left;
+                padding: 8px;
+            }
+        </style>
+    </head>
+    <body>
+     
+        
+
+        <script type="text/javascript"charset="utf-8">
+        var csv;
+        
+    function CSVToArray( strData, strDelimiter ){
+      // Check to see if the delimiter is defined. If not,
+    	// then default to comma.
+    	strDelimiter = (strDelimiter || ",");
+
+    	// Create a regular expression to parse the CSV values.
+    	var objPattern = new RegExp(
+    		(
+    			// Delimiters.
+    			"(\\" + strDelimiter + "|\\r?\\n|\\r|^)" +
+
+    			// Quoted fields.
+    			"(?:\"([^\"]*(?:\"\"[^\"]*)*)\"|" +
+
+    			// Standard fields.
+    			"([^\"\\" + strDelimiter + "\\r\\n]*))"
+    		),
+    		"gi"
+    		);
+
+
+    	// Create an array to hold our data. Give the array
+    	// a default empty first row.
+    	var arrData = [[]];
+
+    	// Create an array to hold our individual pattern
+    	// matching groups.
+    	var arrMatches = null;
+
+
+    	// Keep looping over the regular expression matches
+    	// until we can no longer find a match.
+    	while (arrMatches = objPattern.exec( strData )){
+
+    		// Get the delimiter that was found.
+    		var strMatchedDelimiter = arrMatches[ 1 ];
+
+    		// Check to see if the given delimiter has a length
+    		// (is not the start of string) and if it matches
+    		// field delimiter. If id does not, then we know
+    		// that this delimiter is a row delimiter.
+    		if (
+    			strMatchedDelimiter.length &&
+    			(strMatchedDelimiter != strDelimiter)
+    			){
+
+    			// Since we have reached a new row of data,
+    			// add an empty row to our data array.
+    			arrData.push( [] );
+
+    		}
+
+
+    		// Now that we have our delimiter out of the way,
+    		// let's check to see which kind of value we
+    		// captured (quoted or unquoted).
+    		if (arrMatches[ 2 ]){
+
+    			// We found a quoted value. When we capture
+    			// this value, unescape any double quotes.
+    			var strMatchedValue = arrMatches[ 2 ].replace(
+    				new RegExp( "\"\"", "g" ),
+    				"\""
+    				);
+
+    		} else {
+
+    			// We found a non-quoted value.
+    			var strMatchedValue = arrMatches[ 3 ];
+
+    		}
+
+
+    		// Now that we have our value string, let's add
+    		// it to the data array.
+    		arrData[ arrData.length - 1 ].push( strMatchedValue );
+    	}
+
+    	// Return the parsed data.
+    	return( arrData );
+    }
+    function csvToJson(data){
+        return fetch(data)
+            .then(response => response.text())
+            .then(text =>{
+                csv = text;
+                let arrays = CSVToArray( csv, ';' );
+                let keys = ["ID_EVALUADO", "ID_EVALUADOR", "NOTA", "TIPO"];
+                let values = arrays.slice(0);
+                let objects = values.map(array => {
+                let object = {};
+
+                keys.forEach((key, i) => object[key] = array[i]);
+                
+                return object;
+                });
+
+                return objects;
+              }); 
+            }
+
+        
+        csvToJson('data.csv').then(response => {
+            let elm = '<table><tr><th>ID EVALUADO</th><th>ID EVALAUDOR</th><th>NOTA</th><th>TIPO</th></tr>';
+            for (var i in response) {
+                //console.log(response[i]);
+                elm += '<tr><td>'+response[i].ID_EVALUADO+'</td><td>'+response[i].ID_EVALUADOR+'</td><td>'+response[i].NOTA+'</td><td>'+response[i].TIPO+'</td></tr>';
+            }   
+            elm+='</table>';
+            let nini = 3;
+            let mini = 3;
+            let tal = 20;
+            elm +='<br><table><tr><th>ID</th><th>PROMEDIO ESTUDIANTE</th><th>NOTA DOCENTE</th><th>NOTA EVALUADA (80%)</th><th>NOTA POR EVALUAR (20%)</th><th>CALIFICACION</th></td>'
+            for (var j = 1 ;j <= tal; j++) {
+                n=nini;
+                m=mini;
+                usr = j;
+                notaest = 0;
+                notadoc = 0;
+                for (var i in response) {
+                    if(response[i].ID_EVALUADO == usr && response[i].TIPO !== 'D'){
+                        if(response[i].NOTA !== 'N'){
+                            notaest = notaest+parseFloat(response[i].NOTA/10);
+                        }else{
+                            n = n-1;
+                        }
+                    }
+                    if(response[i].ID_EVALUADO == usr && response[i].TIPO === 'D'){
+                        if(response[i].NOTA !== 'N'){
+                            notadoc = notadoc+parseFloat(response[i].NOTA);
+                        }else{
+                            notadoc = notadoc+10;
+                        }
+                    }
+                }   
+                notaest = (notaest/n)*10;
+                notaevaluada = ((notaest+notadoc)/2)*0.8;
+                notaevaluar = 0;
+                for (var i in response) {
+                    if(response[i].ID_EVALUADOR == usr){
+                        if(response[i].NOTA !== 'N'){
+                            notaevaluar = notaevaluar+(2/m);
+                        }
+                    }
+                }   
+                total=notaevaluada+notaevaluar;
+                if(total<1){
+                    total = 1;
+                }
+                elm += '<tr><td>'+usr+'</td><td>'+notaest+'</td><td>'+notadoc+'</td><td>'+notaevaluada+'</td><td>'+notaevaluar+'</td><td>'+total+'</td><tr>';
+            }
+            elm += '</table>';
+            document.body.innerHTML += elm;
+    }
+);
+        </script>
+    </body>
+</html>
