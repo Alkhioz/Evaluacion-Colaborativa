@@ -157,7 +157,9 @@
               }); 
             }
 
-        
+        function roundToTwo(num) {    
+            return +(Math.round(num + "e+2")  + "e-2");
+        }
         csvToJson('data.csv').then(response => {
             let elm = ' <div class="flexContainer"><div class="flexItem1"><table><tr><th>ID EVALUADO</th><th>ID EVALAUDOR</th><th>NOTA</th><th>TIPO</th></tr>';
             for (var i in response) {
@@ -192,7 +194,14 @@
                     }
                 }   
                 notaest = (notaest/n)*10;
+
+                notaest = roundToTwo(notaest);
+                notadoc = roundToTwo(notadoc);
+
                 notaevaluada = ((notaest+notadoc)/2)*0.8;
+
+                notaevaluada = roundToTwo(notaevaluada);
+
                 notaevaluar = 0;
                 for (var i in response) {
                     if(response[i].ID_EVALUADOR == usr){
@@ -201,7 +210,10 @@
                         }
                     }
                 }   
-                total=notaevaluada+notaevaluar;
+
+                notaevaluar = roundToTwo(notaevaluar);
+
+                total= roundToTwo(notaevaluada+notaevaluar);
                 if(total<1){
                     total = 1;
                 }
