@@ -14,6 +14,39 @@
                 text-align: left;
                 padding: 8px;
             }
+        
+            .flexContainer { 
+            display: flex; 
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            }
+        .flexItem1 { 
+            display: inline-block;
+            width: 30%;
+            max-width: 30%;
+            flex-grow: 1;
+        } 
+        .flexItem2 { 
+            display: inline-block;
+            width: 70%;
+            max-width: 70%;
+            flex-grow: 1;
+        } 
+        @media screen and (max-width: 1200px) {
+        .flexContainer { 
+            -ms-flex-direction: column;
+            -webkit-box-orient: vertical;
+            flex-direction: column; 
+        }
+        .flexItem1 { 
+            width: 100%;
+            max-width: 100%;
+        }     
+        .flexItem2 { 
+            width: 100%;
+            max-width: 100%;
+        }     
+        }
         </style>
     </head>
     <body>
@@ -126,16 +159,16 @@
 
         
         csvToJson('data.csv').then(response => {
-            let elm = '<table><tr><th>ID EVALUADO</th><th>ID EVALAUDOR</th><th>NOTA</th><th>TIPO</th></tr>';
+            let elm = ' <div class="flexContainer"><div class="flexItem1"><table><tr><th>ID EVALUADO</th><th>ID EVALAUDOR</th><th>NOTA</th><th>TIPO</th></tr>';
             for (var i in response) {
                 //console.log(response[i]);
                 elm += '<tr><td>'+response[i].ID_EVALUADO+'</td><td>'+response[i].ID_EVALUADOR+'</td><td>'+response[i].NOTA+'</td><td>'+response[i].TIPO+'</td></tr>';
             }   
-            elm+='</table>';
+            elm+='</table></div>';
             let nini = 3;
             let mini = 3;
             let tal = 20;
-            elm +='<br><table><tr><th>ID</th><th>PROMEDIO ESTUDIANTE</th><th>NOTA DOCENTE</th><th>NOTA EVALUADA (80%)</th><th>NOTA POR EVALUAR (20%)</th><th>CALIFICACION</th></td>'
+            elm +='<div class="flexItem2"><table><tr><th>ID</th><th>PROMEDIO ESTUDIANTE</th><th>NOTA DOCENTE</th><th>NOTA EVALUADA (80%)</th><th>NOTA POR EVALUAR (20%)</th><th>CALIFICACION</th></td>'
             for (var j = 1 ;j <= tal; j++) {
                 n=nini;
                 m=mini;
@@ -174,7 +207,7 @@
                 }
                 elm += '<tr><td>'+usr+'</td><td>'+notaest+'</td><td>'+notadoc+'</td><td>'+notaevaluada+'</td><td>'+notaevaluar+'</td><td>'+total+'</td><tr>';
             }
-            elm += '</table>';
+            elm += '</table></div></div>';
             document.body.innerHTML += elm;
     }
 );
