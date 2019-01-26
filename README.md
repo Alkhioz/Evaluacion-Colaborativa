@@ -1,13 +1,13 @@
 # Evaluación Colaborativa
 Este es un algoritmo de evaluación colaborativa para la revición de documentos implementado en javascript.
 ### Variables:
-Z= calificación final\
-W= Calificaciones de la evaluación entre pares (estudiantes)\
-X= Calificación asignada por el docente\
-N= Número de revisiones totales, incluye estudiantes y docente\
-M= base de calificación; por ejemplo la calificaciòn es sobe 10\
-Y=valor que se obtiene de la comparación de la nota por evaluar que coloca un estudiante con la nota que asigna el docente\
-P= número de evaluaciones realizada por el estudiante\
+z= calificación final\
+w= Calificaciones de la evaluación entre pares (estudiantes)\
+x= Calificación asignada por el docente\
+m= base de calificación; por ejemplo la calificaciòn es sobe 10\
+n= Número de revisiones totales, incluye estudiantes y docente\
+y=valor que se obtiene de la comparación de la nota por evaluar que coloca un estudiante con la nota que asigna el docente\
+p= número de evaluaciones realizada por el estudiante\
 ### Expresión Matemática:
 \
 ![equation](http://latex.codecogs.com/gif.latex?z(w,x,y)=(\frac{(\frac{\sum_{w=0}^{w=n-1}\frac{w}{m}}{n}*m)+x}{2}*0.8)+((\sum_{y=0}^{y=p-1}y)*0.2))
